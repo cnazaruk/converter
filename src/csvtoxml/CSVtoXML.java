@@ -34,7 +34,7 @@ public class CSVtoXML {
             StringBuffer stringBuffer = new StringBuffer();
             BufferedWriter writer = new BufferedWriter(new FileWriter("src/csvtoxml/test.xml"));
             System.out.println("File has been read into the system.");
-            String header = "<?xml version = \"1.0\"?>";
+            String header = "<?xml version = \"1.0\" encoding = \"UTF-8\"?>";
             String line;
             String[] tags;
             String[] values;
@@ -42,26 +42,33 @@ public class CSVtoXML {
             // Write header statement to CSV file
             writer.write(header);
             writer.newLine();
+            writer.newLine();
             System.out.println(header);
             
             // Take out first line and assign to tags
             String firstLine = bufferedReader.readLine();
-            tags = firstLine.trim().split(",");
-            
+            firstLine = firstLine.replaceAll("\\s+","");
+            tags = firstLine.split(",");
+  
             // Check tags
             for(String tag : tags) {
             System.out.println(tag);
             }
             
-            // Read each line and process
+            // Read each line and print to XML file
             while ((line = bufferedReader.readLine()) != null) {
                 values = line.trim().split(",");
                 int count = values.length;
                 for(int i = 0; i < count; i++) {
-                    writer.write("<" + tags[i] + ">" + values[i] + "</" + tags[i] + ">");
+                    writer.write("<" + tags[i].trim() + ">" + values[i].trim() + "</" + tags[i].trim() + ">");
                     writer.newLine();
                         }
+                
             }
+            
+            // Mark end of file and close writer
+            writer.newLine();
+            writer.write("End of file.");
             writer.close();
             
         }
