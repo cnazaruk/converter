@@ -27,7 +27,7 @@ public class CSVtoXML {
         converter(test);
     }
     
-    public static String converter(File file) {
+    public static void converter(File file) {
         try {
             FileReader fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -35,6 +35,7 @@ public class CSVtoXML {
             BufferedWriter writer = new BufferedWriter(new FileWriter("src/csvtoxml/test.xml"));
             System.out.println("File has been read into the system.");
             String header = "<?xml version = \"1.0\" encoding = \"UTF-8\"?>";
+            String firstTag = "first_tag";
             String line;
             String[] tags;
             String[] values;
@@ -43,30 +44,37 @@ public class CSVtoXML {
             writer.write(header);
             writer.newLine();
             writer.newLine();
-            System.out.println(header);
+            writer.write(firstTag);
+            writer.newLine();
+            writer.newLine();
+            System.out.println("The header is: " + header);
             
             // Take out first line and assign to tags
             String firstLine = bufferedReader.readLine();
-            firstLine = firstLine.replaceAll("\\s+","");
             tags = firstLine.split(",");
   
-            // Check tags
-            for(String tag : tags) {
-            System.out.println(tag);
+            // Clean data to be used as tags and print to screen 
+            for(int i = 0; i < tags.length; i++) {
+                tags[i] = tags[i].trim().replaceAll("\\s+","_");
+                System.out.println(tags[i]);
             }
+
             
             // Read each line and print to XML file
             while ((line = bufferedReader.readLine()) != null) {
                 values = line.trim().split(",");
                 int count = values.length;
                 for(int i = 0; i < count; i++) {
-                    writer.write("<" + tags[i].trim() + ">" + values[i].trim() + "</" + tags[i].trim() + ">");
+                    writer.write("   <" + tags[i].trim() + ">" + values[i].trim() + "</" + tags[i].trim() + ">");
                     writer.newLine();
                         }
                 
             }
             
             // Mark end of file and close writer
+            writer.newLine();
+            writer.write(firstTag);
+            writer.newLine();
             writer.newLine();
             writer.write("End of file.");
             writer.close();
@@ -75,7 +83,6 @@ public class CSVtoXML {
         catch (IOException e) {
             e.printStackTrace();
         }
-        return "";
     }
     
     }
