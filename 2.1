@@ -1,0 +1,82 @@
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import java.io.File;
+
+
+public class CreateXML {
+
+   public static void main(String args[]) {
+
+      try {
+         // Read in CSV file
+         //FileReader fileReader = new FileReader(file);
+         //BufferedReader bufferedReader = new BufferedReader(fileReader);
+         
+         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+         Document doc = dBuilder.newDocument();
+         String[] tags = {"tag 1", "tag 2", "tag 3", "tag 4", "tag 5"};
+         String[] values = {"value 1", "value 2", "value 3", "value 4", "value 5"};
+         String rootName = "root_name";
+         
+         // Take out first line and assign to tags
+        //String firstLine = bufferedReader.readLine();
+        //tags = firstLine.split(",");
+        
+        
+         
+         // Clean data to be used as tags and print to screen 
+            for(int i = 0; i < tags.length; i++) {
+                tags[i] = tags[i].trim().replaceAll("\\s+","_");
+                System.out.println(tags[i]);
+            }
+            
+         
+         // root element
+         Element rootElement = doc.createElement(rootName);
+         doc.appendChild(rootElement);
+
+        // Join both loops
+        //while ((line = bufferedReader.readLine()) != null) {
+        //String nextLine = bufferedReader.readLine();
+        //values = nextLine.split(",");
+        //}
+        
+        // Loop through elements 
+        for (int i = 0; i < tags.length; i++) {
+            Element element = doc.createElement(tags[i]);
+            rootElement.appendChild(element);
+            element.appendChild(doc.createTextNode(values[i]));
+            rootElement.appendChild(element);
+        }
+
+         
+         // write the content into xml file
+         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+         Transformer transformer = transformerFactory.newTransformer();
+         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+		 transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		 transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+         DOMSource source = new DOMSource(doc);
+         StreamResult result = new StreamResult(new File("C:\\test.xml"));
+         transformer.transform(source, result);
+
+         
+         // Output to console for testing
+         StreamResult consoleResult = new StreamResult(System.out);
+         transformer.transform(source, consoleResult);
+         
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+}
